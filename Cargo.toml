@@ -1,0 +1,64 @@
+[package]
+name = "gpui-template"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[package.metadata.bundle]
+category = "Developer Tool"
+icon = ["assets/icon.png"]
+identifier = "com.example.gpui-template"
+name = "GPUI Template"
+
+[package.metadata.i18n]
+available-locales = ["en", "zh-CN"]
+default-locale = "en"
+load-path = "locales"
+
+[[bin]]
+name = "gpui-template"
+path = "src/main.rs"
+
+[dependencies]
+gpui = { git = "https://github.com/zed-industries/zed" }
+gpui-component = { git = "https://github.com/sxhxliang/gpui-component", branch = "main" }
+gpui_platform = { git = "https://github.com/zed-industries/zed", features = ["font-kit"] }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+log = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+rust-embed = { version = "8", features = ["interpolate-folder-path"] }
+rust-i18n = "3"
+sys-locale = "0.3"
+dirs = "6"
+image = "0.25"
+tray-icon = "0.19"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+gtk = "0.18"
+
+[lints.rust]
+dead_code = "allow"
+unused_imports = "allow"
+unused_variables = "allow"
+
+[lints.clippy]
+style = { level = "allow", priority = -1 }
+too_many_arguments = "allow"
+type_complexity = "allow"
+
+[profile.dev]
+codegen-units = 16
+debug = "limited"
+opt-level = 1
+strip = "debuginfo"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = "z"
+panic = "abort"
+strip = true

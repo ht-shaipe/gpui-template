@@ -1,0 +1,36 @@
+{
+  "name": "Default Light",
+  "author": "GPUI Template",
+  "themes": [
+    {
+      "mode": "light",
+      "colors": {
+        "background": "#FFFFFF",
+        "foreground": "#1A1A1A",
+        "primary": "#0066CC",
+        "secondary": "#F3F4F6",
+        "border": "#E5E7EB",
+        "hover": "#F9FAFB",
+        "active": "#F3F4F6",
+        "disabled": "#9CA3AF",
+        "error": "#DC2626",
+        "success": "#16A34A"
+      }
+    },
+    {
+      "mode": "dark",
+      "colors": {
+        "background": "#1A1A1A",
+        "foreground": "#F9FAFB",
+        "primary": "#60A5FA",
+        "secondary": "#2D2D2D",
+        "border": "#404040",
+        "hover": "#2D2D2D",
+        "active": "#373737",
+        "disabled": "#6B7280",
+        "error": "#F87171",
+        "success": "#4ADE80"
+      }
+    }
+  ]
+}

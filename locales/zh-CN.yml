@@ -1,0 +1,50 @@
+_version: 1
+
+# 应用
+app.title: "GPUI 模板"
+
+# 菜单
+menu.app.about: "关于"
+menu.app.open: "打开..."
+menu.app.appearance: "外观"
+menu.app.appearance.light: "浅色"
+menu.app.appearance.dark: "深色"
+menu.app.theme: "主题"
+menu.app.language: "语言"
+menu.app.language.english: "English"
+menu.app.language.zh_cn: "简体中文"
+menu.app.quit: "退出"
+menu.edit.title: "编辑"
+menu.edit.undo: "撤销"
+menu.edit.redo: "重做"
+menu.edit.cut: "剪切"
+menu.edit.copy: "复制"
+menu.edit.paste: "粘贴"
+menu.edit.select_all: "全选"
+menu.window.title: "窗口"
+menu.window.close: "关闭窗口"
+menu.help.title: "帮助"
+menu.help.open_website: "打开网站"
+
+# 标题栏
+title_bar.font_size.label: "字体大小"
+title_bar.font_size.large: "大"
+title_bar.font_size.medium_default: "中（默认）"
+title_bar.font_size.small: "小"
+
+# 设置
+settings.general.title: "通用"
+settings.general.group.appearance: "外观"
+settings.general.appearance.dark_mode.label: "深色模式"
+settings.general.appearance.dark_mode.description: "在浅色与深色主题间切换。"
+settings.general.appearance.auto_switch.label: "自动切换主题"
+settings.general.appearance.auto_switch.description: "根据系统设置自动切换主题。"
+settings.general.appearance.resettable.label: "重置按钮"
+settings.general.appearance.resettable.description: "启用或禁用设置中的重置按钮。"
+settings.general.group.font: "字体"
+settings.general.font.family.label: "字体"
+settings.general.font.family.description: "选择界面字体。"
+settings.general.font.size.label: "字号"
+settings.general.font.size.description: "调整字号以提升可读性。"
+settings.general.font.line_height.label: "行高"
+settings.general.font.line_height.description: "调整行高以提升可读性。"

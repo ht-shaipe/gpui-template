@@ -1,0 +1,50 @@
+_version: 1
+
+# App
+app.title: "GPUI Template"
+
+# Menu
+menu.app.about: "About"
+menu.app.open: "Open..."
+menu.app.appearance: "Appearance"
+menu.app.appearance.light: "Light"
+menu.app.appearance.dark: "Dark"
+menu.app.theme: "Theme"
+menu.app.language: "Language"
+menu.app.language.english: "English"
+menu.app.language.zh_cn: "简体中文"
+menu.app.quit: "Quit"
+menu.edit.title: "Edit"
+menu.edit.undo: "Undo"
+menu.edit.redo: "Redo"
+menu.edit.cut: "Cut"
+menu.edit.copy: "Copy"
+menu.edit.paste: "Paste"
+menu.edit.select_all: "Select All"
+menu.window.title: "Window"
+menu.window.close: "Close Window"
+menu.help.title: "Help"
+menu.help.open_website: "Open Website"
+
+# Title Bar
+title_bar.font_size.label: "Font Size"
+title_bar.font_size.large: "Large"
+title_bar.font_size.medium_default: "Medium (default)"
+title_bar.font_size.small: "Small"
+
+# Settings
+settings.general.title: "General"
+settings.general.group.appearance: "Appearance"
+settings.general.appearance.dark_mode.label: "Dark Mode"
+settings.general.appearance.dark_mode.description: "Switch between light and dark themes."
+settings.general.appearance.auto_switch.label: "Auto Switch Theme"
+settings.general.appearance.auto_switch.description: "Automatically switch theme based on system settings."
+settings.general.appearance.resettable.label: "Reset Button"
+settings.general.appearance.resettable.description: "Enable or disable reset buttons for settings."
+settings.general.group.font: "Font"
+settings.general.font.family.label: "Font Family"
+settings.general.font.family.description: "Select the font family for the UI."
+settings.general.font.size.label: "Font Size"
+settings.general.font.size.description: "Adjust the font size for better readability."
+settings.general.font.line_height.label: "Line Height"
+settings.general.font.line_height.description: "Adjust the line height for better readability."
