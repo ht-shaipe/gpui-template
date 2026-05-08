@@ -1,56 +1,59 @@
 mod settings;
 
-pub use settings::AppSettings;
+pub use crate::app_state::AppSettings;
 pub use settings::SettingsPanel;
 
 use gpui::*;
-use gpui_component::dock::{Panel, PanelEvent, PanelInfo};
+use gpui_component::dock::{Panel, PanelEvent};
+use gpui_component::label::Label;
 use serde::{Deserialize, Serialize};
 
 /// A minimal sample panel to demonstrate dock panel integration
 pub struct SamplePanel {
     focus_handle: FocusHandle,
+    name: SharedString,
 }
 
 impl SamplePanel {
     pub fn new(_window: &mut Window, cx: &mut App) -> Self {
+        Self::with_name("Sample Panel", cx)
+    }
+
+    pub fn with_name(name: impl Into<SharedString>, cx: &mut App) -> Self {
         Self {
             focus_handle: cx.focus_handle(),
+            name: name.into(),
         }
     }
 }
 
 impl Panel for SamplePanel {
-    fn persistent_name() -> &'static str {
+    fn panel_name(&self) -> &'static str {
         "SamplePanel"
     }
 
-    fn panel_info(&self) -> PanelInfo {
-        PanelInfo::default()
+    fn title(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
+        self.name.clone()
     }
+}
 
-    fn title(&self, _window: &Window, _cx: &App) -> AnyElement {
-        "Sample Panel".into_any_element()
-    }
+impl EventEmitter<PanelEvent> for SamplePanel {}
 
-    fn focus_handle(&self, _cx: &App) -> FocusHandle {
+impl Focusable for SamplePanel {
+    fn focus_handle(&self, _: &App) -> FocusHandle {
         self.focus_handle.clone()
     }
 }
 
 impl Render for SamplePanel {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        use gpui_component::ActiveTheme;
-
+    fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
         div()
-            .size_full()
-            .p_4()
-            .child(
-                div()
-                    .text_sm()
-                    .text_color(cx.theme().foreground)
-                    .child("Welcome to GPUI Template! This is a sample panel."),
-            )
+            .w_full()
+            .h_full()
+            .flex()
+            .items_center()
+            .justify_center()
+            .child(Label::new(self.name.clone()))
     }
 }
 

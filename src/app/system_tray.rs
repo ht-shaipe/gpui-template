@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use tray_icon::{
-    MouseButton, TrayIcon, TrayIconBuilder, TrayIconEvent,
     menu::{Menu, MenuEvent, MenuId, MenuItem, PredefinedMenuItem},
+    MouseButton, TrayIcon, TrayIconBuilder, TrayIconEvent, TrayIconId,
 };
 
 const MENU_SHOW_ID: &str = "show_window";
@@ -38,9 +38,15 @@ impl SystemTray {
         let separator = PredefinedMenuItem::separator();
         let quit_item = MenuItem::with_id(quit_menu_id.clone(), "Quit", true, None);
 
-        tray_menu.append(&show_item).context("Failed to append show item")?;
-        tray_menu.append(&separator).context("Failed to append separator")?;
-        tray_menu.append(&quit_item).context("Failed to append quit item")?;
+        tray_menu
+            .append(&show_item)
+            .context("Failed to append show item")?;
+        tray_menu
+            .append(&separator)
+            .context("Failed to append separator")?;
+        tray_menu
+            .append(&quit_item)
+            .context("Failed to append quit item")?;
 
         let icon = load_icon()?;
         let tray_icon = TrayIconBuilder::new()
@@ -88,43 +94,41 @@ pub fn setup_tray_event_handler(tray: SystemTray, cx: &mut gpui::App) {
 
     let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel::<TrayEvent>();
 
-    std::thread::spawn(move || {
-        loop {
-            let mut has_event = false;
+    std::thread::spawn(move || loop {
+        let mut has_event = false;
 
-            if let Ok(event) = tray_icon_event_receiver.try_recv() {
-                has_event = true;
-                if let TrayIconEvent::Click { button, .. } = event {
-                    if button == MouseButton::Left {
-                        let _ = tx.send(TrayEvent::Show);
-                    }
+        if let Ok(event) = tray_icon_event_receiver.try_recv() {
+            has_event = true;
+            if let TrayIconEvent::Click { button, .. } = event {
+                if button == MouseButton::Left {
+                    let _ = tx.send(TrayEvent::Show);
                 }
             }
+        }
 
-            if let Ok(event) = menu_event_receiver.try_recv() {
-                has_event = true;
-                let menu_id = event.id();
-                let tray_event = if menu_id == &show_menu_id {
-                    Some(TrayEvent::Show)
-                } else if menu_id == &quit_menu_id {
-                    Some(TrayEvent::Quit)
-                } else {
-                    None
-                };
+        if let Ok(event) = menu_event_receiver.try_recv() {
+            has_event = true;
+            let menu_id = event.id();
+            let tray_event = if menu_id == &show_menu_id {
+                Some(TrayEvent::Show)
+            } else if menu_id == &quit_menu_id {
+                Some(TrayEvent::Quit)
+            } else {
+                None
+            };
 
-                if let Some(tray_event) = tray_event {
-                    if tx.send(tray_event).is_err() {
-                        break;
-                    }
-                    if tray_event == TrayEvent::Quit {
-                        break;
-                    }
+            if let Some(tray_event) = tray_event {
+                if tx.send(tray_event).is_err() {
+                    break;
+                }
+                if tray_event == TrayEvent::Quit {
+                    break;
                 }
             }
+        }
 
-            if !has_event {
-                std::thread::sleep(std::time::Duration::from_millis(16));
-            }
+        if !has_event {
+            std::thread::sleep(std::time::Duration::from_millis(16));
         }
     });
 

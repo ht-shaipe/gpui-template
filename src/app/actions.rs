@@ -1,5 +1,6 @@
-use gpui::{Action, SharedString, actions};
-use gpui_component::{ThemeMode, scroll::ScrollbarShow};
+use gpui::{actions, Action, SharedString};
+use gpui_component::ThemeMode;
+use serde::Deserialize;
 
 // General application actions
 actions!(
@@ -9,32 +10,25 @@ actions!(
         Open,
         Quit,
         CloseWindow,
-        ToggleSearch, // 切换搜索面板
+        ToggleSearch,
     ]
 );
 
 // Menu editing actions
-actions!(
-    menu,
-    [
-        Copy,
-        Paste,
-        Cut,
-    ]
-);
+actions!(menu, [Copy, Paste, Cut,]);
 
 /// Select language
-#[derive(Action, Clone, PartialEq, Eq, gpui::Deserialize)]
+#[derive(Action, Clone, PartialEq, Eq, Deserialize)]
 #[action(namespace = app, no_json)]
 pub struct SelectLocale(pub SharedString);
 
 /// Select font size
-#[derive(Action, Clone, PartialEq, Eq, gpui::Deserialize)]
+#[derive(Action, Clone, PartialEq, Eq, Deserialize)]
 #[action(namespace = app, no_json)]
 pub struct SelectFont(pub usize);
 
 /// Select border radius
-#[derive(Action, Clone, PartialEq, Eq, gpui::Deserialize)]
+#[derive(Action, Clone, PartialEq, Eq, Deserialize)]
 #[action(namespace = app, no_json)]
 pub struct SelectRadius(pub usize);
 

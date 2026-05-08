@@ -1,6 +1,6 @@
-use gpui::{App, Axis, Entity, FocusHandle, Focusable, IntoElement, Render, Window};
+use gpui::{App, Context, Entity, IntoElement, Render, Window};
 use gpui_component::{
-    ActiveTheme, Sizable, Size, Theme, ThemeMode,
+    ActiveTheme as _, Theme, ThemeMode,
     setting::{NumberFieldOptions, SettingField, SettingGroup, SettingItem, SettingPage},
 };
 use rust_i18n::t;
@@ -8,15 +8,11 @@ use rust_i18n::t;
 use super::AppSettings;
 
 /// Settings panel
-pub struct SettingsPanel {
-    focus_handle: FocusHandle,
-}
+pub struct SettingsPanel;
 
 impl SettingsPanel {
-    pub fn new(_window: &mut Window, cx: &mut App) -> Self {
-        Self {
-            focus_handle: cx.focus_handle(),
-        }
+    pub fn new(_window: &mut Window, _cx: &mut App) -> Self {
+        Self
     }
 
     pub fn general_page(&self, _view: &Entity<Self>, resettable: bool) -> SettingPage {
@@ -126,14 +122,9 @@ impl SettingsPanel {
     }
 }
 
-impl crate::panels::SamplePanel {
-    // Just to reuse SamplePanel's Panel trait, we don't need SettingsPanel as a Panel itself.
-    // Settings is opened as a dialog/sheet from title bar.
-}
-
 impl Render for SettingsPanel {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let page = self.general_page(&cx.entity(), AppSettings::global(cx).resettable);
-        gpui_component::setting::Settings::new().page(page).into_any_element()
+        gpui_component::setting::Settings::new("settings").page(page)
     }
 }

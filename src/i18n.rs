@@ -1,5 +1,4 @@
 use gpui::App;
-use rust_i18n::t;
 
 use crate::app::actions::SelectLocale;
 use crate::panels::AppSettings;

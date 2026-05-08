@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use gpui::{App, SharedString, px};
-use gpui_component::{ActiveTheme, Theme, ThemeRegistry, scroll::ScrollbarShow};
+use gpui_component::{ActiveTheme as _, Theme, ThemeRegistry};
 use serde::{Deserialize, Serialize};
 
 use crate::app::actions::{SwitchTheme, SwitchThemeMode};
@@ -120,7 +120,7 @@ fn sync_font_size(cx: &mut App) {
     Theme::global_mut(cx).font_size = px(font_size as f32);
 }
 
-fn save_state(cx: &mut App) {
+pub(crate) fn save_state(cx: &mut App) {
     let state = State {
         theme: cx.theme().theme_name().clone(),
         app_settings: Some(AppSettings::global(cx).clone()),

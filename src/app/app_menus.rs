@@ -1,5 +1,5 @@
 use gpui::{App, Menu, MenuItem, SharedString};
-use gpui_component::{ActiveTheme, ThemeMode, ThemeRegistry};
+use gpui_component::{ActiveTheme as _, ThemeMode, ThemeRegistry};
 use rust_i18n::t;
 
 use crate::app::actions::{About, CloseWindow, Open, Quit, SelectLocale, SwitchTheme, SwitchThemeMode};
@@ -8,7 +8,6 @@ use crate::app::actions::{About, CloseWindow, Open, Quit, SelectLocale, SwitchTh
 pub fn init(title: impl Into<SharedString>, cx: &mut App) {
     cx.set_menus(vec![
         Menu {
-            disabled: false,
             name: title.into(),
             items: vec![
                 MenuItem::action(t!("menu.app.about").to_string(), About),
@@ -16,7 +15,6 @@ pub fn init(title: impl Into<SharedString>, cx: &mut App) {
                 MenuItem::action(t!("menu.app.open").to_string(), Open),
                 MenuItem::Separator,
                 MenuItem::Submenu(Menu {
-                    disabled: false,
                     name: t!("menu.app.appearance").to_string().into(),
                     items: vec![
                         MenuItem::action(
@@ -28,15 +26,16 @@ pub fn init(title: impl Into<SharedString>, cx: &mut App) {
                             SwitchThemeMode(ThemeMode::Dark),
                         ),
                     ],
+                    disabled: false,
                 }),
                 theme_menu(cx),
                 language_menu(cx),
                 MenuItem::Separator,
                 MenuItem::action(t!("menu.app.quit").to_string(), Quit),
             ],
+            disabled: false,
         },
         Menu {
-            disabled: false,
             name: t!("menu.edit.title").to_string().into(),
             items: vec![
                 MenuItem::action(t!("menu.edit.undo").to_string(), gpui_component::input::Undo),
@@ -48,28 +47,28 @@ pub fn init(title: impl Into<SharedString>, cx: &mut App) {
                 MenuItem::separator(),
                 MenuItem::action(t!("menu.edit.select_all").to_string(), gpui_component::input::SelectAll),
             ],
+            disabled: false,
         },
         Menu {
-            disabled: false,
             name: t!("menu.window.title").to_string().into(),
             items: vec![
                 MenuItem::action(t!("menu.window.close").to_string(), CloseWindow),
             ],
+            disabled: false,
         },
         Menu {
-            disabled: false,
             name: t!("menu.help.title").to_string().into(),
             items: vec![MenuItem::action(
                 t!("menu.help.open_website").to_string(),
                 Open,
             )],
+            disabled: false,
         },
     ]);
 }
 
 fn language_menu(_cx: &App) -> MenuItem {
     MenuItem::Submenu(Menu {
-        disabled: false,
         name: t!("menu.app.language").to_string().into(),
         items: vec![
             MenuItem::action(
@@ -81,6 +80,7 @@ fn language_menu(_cx: &App) -> MenuItem {
                 SelectLocale("zh-CN".into()),
             ),
         ],
+        disabled: false,
     })
 }
 
@@ -88,7 +88,6 @@ fn theme_menu(cx: &App) -> MenuItem {
     let themes = ThemeRegistry::global(cx).sorted_themes();
     let current_theme = cx.theme().theme_name();
     MenuItem::Submenu(Menu {
-        disabled: false,
         name: t!("menu.app.theme").to_string().into(),
         items: themes
             .iter()
@@ -102,5 +101,6 @@ fn theme_menu(cx: &App) -> MenuItem {
                 MenuItem::action(label, SwitchTheme(name))
             })
             .collect(),
+        disabled: false,
     })
 }

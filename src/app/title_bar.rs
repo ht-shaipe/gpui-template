@@ -1,17 +1,18 @@
-use std::rc::Rc;
-
 use gpui::{
-    AnyElement, App, Context, Corner, Entity, FocusHandle, InteractiveElement as _,
-    IntoElement, MouseButton, ParentElement as _, Render, SharedString, Styled as _, Window, px,
+    div, prelude::FluentBuilder, AppContext, Context, Entity, FocusHandle,
+    InteractiveElement as _, IntoElement, MouseButton, ParentElement as _, Render,
+    SharedString, Styled as _, Window, px,
 };
 use gpui_component::{
-    ActiveTheme as _, Icon, IconName, Side, Sizable as _, Theme, TitleBar, WindowExt as _,
+    IconName, Sizable as _, Side,
     button::{Button, ButtonVariants as _},
-    menu::AppMenuBar,
+    menu::{AppMenuBar, DropdownMenu as _},
+    TitleBar,
 };
 use rust_i18n::t;
 
-use crate::{AppState, SelectFont, app_menus};
+use crate::app_state::AppState;
+use crate::{SelectFont, app_menus};
 
 /// App title bar
 pub struct AppTitleBar {
@@ -40,29 +41,27 @@ impl AppTitleBar {
 }
 
 impl Render for AppTitleBar {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        div().child(
-            TitleBar::new()
-                .child(
-                    div()
-                        .flex()
-                        .items_center()
-                        .when(!cfg!(target_os = "macos"), |this| {
-                            this.child(self.app_menu_bar.clone())
-                        }),
-                )
-                .child(t!("app.title").to_string())
-                .child(
-                    div()
-                        .flex()
-                        .items_center()
-                        .justify_end()
-                        .px_2()
-                        .gap_2()
-                        .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
-                        .child(self.font_size_selector.clone()),
-                ),
-        )
+    fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
+        TitleBar::new()
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .when(!cfg!(target_os = "macos"), |this| {
+                        this.child(self.app_menu_bar.clone())
+                    }),
+            )
+            .child(t!("app.title").to_string())
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .justify_end()
+                    .px_2()
+                    .gap_2()
+                    .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
+                    .child(self.font_size_selector.clone()),
+            )
     }
 }
 
@@ -98,7 +97,7 @@ impl Render for FontSizeSelector {
                     .small()
                     .ghost()
                     .icon(IconName::Settings2)
-                    .dropdown_menu(move |this, _, _| {
+                    .dropdown_menu(move |this, _window, _cx| {
                         this.scrollable(true)
                             .check_side(Side::Right)
                             .max_h(px(480.))
@@ -118,8 +117,7 @@ impl Render for FontSizeSelector {
                                 font_size == 14,
                                 Box::new(SelectFont(14)),
                             )
-                    })
-                    .anchor(Corner::TopRight),
+                    }),
             )
     }
 }
