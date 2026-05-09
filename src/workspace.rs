@@ -1,8 +1,8 @@
 use gpui::*;
 use gpui_component::dock::{DockArea, DockItem};
-use gpui_component::v_flex;
+use std::sync::Arc;
 
-use crate::panels::SamplePanel;
+use crate::panels::{CenterPanel, SamplePanel};
 
 pub struct Workspace {
     dock_area: Entity<DockArea>,
@@ -14,12 +14,12 @@ impl Workspace {
             cx.new(|cx| DockArea::new("main-dock", None, window, cx));
         let weak_dock_area = dock_area.downgrade();
 
-        // Create left panel
+        // Create left panel (no title bar, no zoom)
         let left_panel = cx.new(|cx| SamplePanel::with_name("Left Panel", cx));
-        let left_item = DockItem::tab(left_panel, &weak_dock_area, window, cx);
+        let left_item = DockItem::panel(Arc::new(left_panel.clone()));
 
-        // Create center panel
-        let center_panel = cx.new(|cx| SamplePanel::with_name("Center Panel", cx));
+        // Create center panel with tabs
+        let center_panel = cx.new(|cx| CenterPanel::new(window, cx));
         let center_item = DockItem::tab(center_panel, &weak_dock_area, window, cx);
 
         // Create right panel

@@ -1,10 +1,12 @@
+mod center_panel;
 mod settings;
 
 pub use crate::app_state::AppSettings;
+pub use center_panel::CenterPanel;
 pub use settings::SettingsPanel;
 
 use gpui::*;
-use gpui_component::dock::{Panel, PanelEvent};
+use gpui_component::dock::{Panel, PanelControl, PanelEvent};
 use serde::{Deserialize, Serialize};
 
 /// A minimal sample panel to demonstrate dock panel integration
@@ -32,7 +34,13 @@ impl Panel for SamplePanel {
     }
 
     fn title(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        self.name.clone()
+        // Return empty div to hide title
+        div().h(px(0.)).into_any_element()
+    }
+
+    fn zoomable(&self, _cx: &App) -> Option<PanelControl> {
+        // 禁用缩放按钮
+        None
     }
 }
 

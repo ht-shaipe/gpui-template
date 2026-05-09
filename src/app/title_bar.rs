@@ -1,5 +1,5 @@
 use gpui::{
-    div, prelude::FluentBuilder, AppContext, Context, Entity, FocusHandle,
+    div, prelude::FluentBuilder, App, AppContext, Context, Entity, FocusHandle,
     InteractiveElement as _, IntoElement, MouseButton, ParentElement as _, Render,
     SharedString, Styled as _, Window, px,
 };
@@ -61,7 +61,17 @@ impl Render for AppTitleBar {
                     .px_2()
                     .gap_2()
                     .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
-                    .child(self.font_size_selector.clone()),
+                    .child(self.font_size_selector.clone())
+                    .child(
+                        Button::new("title-settings-btn")
+                            .small()
+                            .ghost()
+                            .icon(IconName::Settings)
+                            .on_click(move |_ev, window: &mut Window, cx: &mut App| {
+                                crate::panels::AppSettings::global_mut(cx).show_settings = true;
+                                window.refresh();
+                            }),
+                    ),
             )
     }
 }

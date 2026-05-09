@@ -11,7 +11,7 @@ pub use assets::Assets;
 pub use app::{
     actions::{
         About, CloseWindow, Open, Quit, SelectFont, SelectLocale, SelectRadius, SwitchTheme,
-        SwitchThemeMode, ToggleSearch,
+        SwitchThemeMode, ToggleSearch, OpenSettings,
     },
     app_menus, app_state, key_binding, system_tray, themes, title_bar,
 };

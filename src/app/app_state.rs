@@ -12,6 +12,8 @@ pub struct AppSettings {
     pub line_height: f64,
     pub resettable: bool,
     pub group_variant: SharedString,
+    #[serde(default)]
+    pub show_settings: bool,
 }
 
 impl Default for AppSettings {
@@ -24,6 +26,7 @@ impl Default for AppSettings {
             line_height: 12.0,
             resettable: true,
             group_variant: "Fill".into(),
+            show_settings: false,
         }
     }
 }

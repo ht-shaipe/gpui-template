@@ -11,6 +11,7 @@ actions!(
         Quit,
         CloseWindow,
         ToggleSearch,
+        OpenSettings,
     ]
 );
 
