@@ -1,11 +1,24 @@
-use gpui::{App, Menu, MenuItem, SharedString};
+use gpui::{App, SharedString};
+#[cfg(not(target_family = "wasm"))]
+use gpui::{Menu, MenuItem};
+#[cfg(not(target_family = "wasm"))]
 use gpui_component::{ActiveTheme as _, ThemeMode, ThemeRegistry};
+#[cfg(not(target_family = "wasm"))]
 use rust_i18n::t;
 
+#[cfg(not(target_family = "wasm"))]
 use crate::app::actions::{About, CloseWindow, Open, Quit, SelectLocale, SwitchTheme, SwitchThemeMode};
 
 /// Initialize app menus
 pub fn init(title: impl Into<SharedString>, cx: &mut App) {
+    #[cfg(target_family = "wasm")]
+    {
+        let _: SharedString = title.into();
+        let _ = cx;
+        return;
+    }
+
+    #[cfg(not(target_family = "wasm"))]
     cx.set_menus(vec![
         Menu {
             name: title.into(),
@@ -26,14 +39,12 @@ pub fn init(title: impl Into<SharedString>, cx: &mut App) {
                             SwitchThemeMode(ThemeMode::Dark),
                         ),
                     ],
-                    disabled: false,
                 }),
                 theme_menu(cx),
                 language_menu(cx),
                 MenuItem::Separator,
                 MenuItem::action(t!("menu.app.quit").to_string(), Quit),
             ],
-            disabled: false,
         },
         Menu {
             name: t!("menu.edit.title").to_string().into(),
@@ -47,14 +58,12 @@ pub fn init(title: impl Into<SharedString>, cx: &mut App) {
                 MenuItem::separator(),
                 MenuItem::action(t!("menu.edit.select_all").to_string(), gpui_component::input::SelectAll),
             ],
-            disabled: false,
         },
         Menu {
             name: t!("menu.window.title").to_string().into(),
             items: vec![
                 MenuItem::action(t!("menu.window.close").to_string(), CloseWindow),
             ],
-            disabled: false,
         },
         Menu {
             name: t!("menu.help.title").to_string().into(),
@@ -62,11 +71,11 @@ pub fn init(title: impl Into<SharedString>, cx: &mut App) {
                 t!("menu.help.open_website").to_string(),
                 Open,
             )],
-            disabled: false,
         },
     ]);
 }
 
+#[cfg(not(target_family = "wasm"))]
 fn language_menu(_cx: &App) -> MenuItem {
     MenuItem::Submenu(Menu {
         name: t!("menu.app.language").to_string().into(),
@@ -80,10 +89,10 @@ fn language_menu(_cx: &App) -> MenuItem {
                 SelectLocale("zh-CN".into()),
             ),
         ],
-        disabled: false,
     })
 }
 
+#[cfg(not(target_family = "wasm"))]
 fn theme_menu(cx: &App) -> MenuItem {
     let themes = ThemeRegistry::global(cx).sorted_themes();
     let current_theme = cx.theme().theme_name();
@@ -101,6 +110,5 @@ fn theme_menu(cx: &App) -> MenuItem {
                 MenuItem::action(label, SwitchTheme(name))
             })
             .collect(),
-        disabled: false,
     })
 }

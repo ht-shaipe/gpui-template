@@ -1,26 +1,37 @@
+#[cfg(not(target_family = "wasm"))]
 use anyhow::{Context, Result};
+#[cfg(not(target_family = "wasm"))]
 use tray_icon::{
     menu::{Menu, MenuEvent, MenuId, MenuItem, PredefinedMenuItem},
     MouseButton, TrayIcon, TrayIconBuilder, TrayIconEvent, TrayIconId,
 };
 
+#[cfg(not(target_family = "wasm"))]
 const MENU_SHOW_ID: &str = "show_window";
+#[cfg(not(target_family = "wasm"))]
 const MENU_QUIT_ID: &str = "quit_app";
+#[cfg(not(target_family = "wasm"))]
 const TRAY_ICON_ID: &str = "com.example.gpui-template.tray";
 
 /// Initialize GTK on Linux (required before creating tray icon)
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", not(target_family = "wasm")))]
 pub fn init_platform() -> Result<()> {
     gtk::init().context("Failed to initialize GTK")?;
     Ok(())
 }
 
-#[cfg(not(target_os = "linux"))]
+#[cfg(all(not(target_os = "linux"), not(target_family = "wasm")))]
 pub fn init_platform() -> Result<()> {
     Ok(())
 }
 
-/// System tray manager
+#[cfg(target_family = "wasm")]
+pub fn init_platform() -> anyhow::Result<()> {
+    Ok(())
+}
+
+/// System tray manager (native only)
+#[cfg(not(target_family = "wasm"))]
 pub struct SystemTray {
     #[allow(dead_code)]
     tray_icon: TrayIcon,
@@ -28,6 +39,7 @@ pub struct SystemTray {
     quit_menu_id: MenuId,
 }
 
+#[cfg(not(target_family = "wasm"))]
 impl SystemTray {
     pub fn new() -> Result<Self> {
         let tray_menu = Menu::new();
@@ -66,12 +78,14 @@ impl SystemTray {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TrayEvent {
     Show,
     Quit,
 }
 
+#[cfg(not(target_family = "wasm"))]
 fn load_icon() -> Result<tray_icon::Icon> {
     let icon_bytes = include_bytes!("../../assets/icon.png");
     let image = image::load_from_memory(icon_bytes).context("Failed to load icon image")?;
@@ -82,6 +96,7 @@ fn load_icon() -> Result<tray_icon::Icon> {
 }
 
 /// Setup tray event handler
+#[cfg(not(target_family = "wasm"))]
 pub fn setup_tray_event_handler(tray: SystemTray, cx: &mut gpui::App) {
     let menu_event_receiver = MenuEvent::receiver().clone();
     let tray_icon_event_receiver = TrayIconEvent::receiver().clone();

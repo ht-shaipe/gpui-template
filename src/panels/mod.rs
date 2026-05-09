@@ -5,7 +5,6 @@ pub use settings::SettingsPanel;
 
 use gpui::*;
 use gpui_component::dock::{Panel, PanelEvent};
-use gpui_component::label::Label;
 use serde::{Deserialize, Serialize};
 
 /// A minimal sample panel to demonstrate dock panel integration
@@ -47,13 +46,22 @@ impl Focusable for SamplePanel {
 
 impl Render for SamplePanel {
     fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        div()
-            .w_full()
-            .h_full()
+        eprintln!("DEBUG SamplePanel render: name={}", self.name);
+        
+        let text_elem = div()
+            .id("text-container")
             .flex()
             .items_center()
             .justify_center()
-            .child(Label::new(self.name.clone()))
+            .w_full()
+            .h_full()
+            .bg(gpui::rgb(0x444444))
+            .text_color(gpui::red())
+            .text_size(px(32.))
+            .child("TEST TEXT");
+        
+        eprintln!("DEBUG About to return from SamplePanel render");
+        text_elem
     }
 }
 

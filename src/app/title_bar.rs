@@ -31,7 +31,7 @@ impl AppTitleBar {
         AppState::global_mut(cx).set_app_title(title);
 
         let font_size_selector = cx.new(|cx| FontSizeSelector::new(window, cx));
-        let app_menu_bar = AppMenuBar::new(cx);
+        let app_menu_bar = AppMenuBar::new(window, cx);
 
         Self {
             app_menu_bar,
@@ -47,9 +47,10 @@ impl Render for AppTitleBar {
                 div()
                     .flex()
                     .items_center()
-                    .when(!cfg!(target_os = "macos"), |this| {
-                        this.child(self.app_menu_bar.clone())
-                    }),
+                    .when(
+                        !cfg!(any(target_os = "macos", target_family = "wasm")),
+                        |this| this.child(self.app_menu_bar.clone()),
+                    ),
             )
             .child(t!("app.title").to_string())
             .child(

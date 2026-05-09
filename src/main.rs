@@ -1,12 +1,14 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use gpui::{Application, App, AppContext};
+
 fn main() {
     #[cfg(target_os = "windows")]
     std::env::set_var("GPUI_DISABLE_DIRECT_COMPOSITION", "true");
 
-    gpui_platform::application()
+    Application::new()
         .with_assets(gpui_template::Assets)
-        .run(move |cx| {
+        .run(move |cx: &mut App| {
             gpui_template::init(cx);
 
             // System tray

@@ -19,22 +19,85 @@ pub use panels::{AppSettings, SettingsPanel};
 pub use workspace::Workspace;
 
 use gpui::{
-    AnyView, App, AppContext as _, Bounds, Context, Entity, IntoElement, ParentElement,
-    Render, SharedString, Styled, Window, WindowBounds, WindowKind, WindowOptions, div, px, size,
+    AnyView, App, AppContext as _, Context, Entity, InteractiveElement, IntoElement,
+    ParentElement, Render, SharedString, Styled, Window, WindowOptions, div,
 };
-use gpui_component::{
-    Root, TitleBar,
-    dock::{register_panel, PanelInfo},
-};
+#[cfg(not(target_family = "wasm"))]
+use gpui::{Bounds, WindowBounds, WindowKind, px, size};
+use gpui_component::{Root, dock::{register_panel, PanelInfo}};
+#[cfg(not(target_family = "wasm"))]
+use gpui_component::TitleBar;
+
+#[cfg(target_family = "wasm")]
+use wasm_bindgen::prelude::*;
 
 const PANEL_NAME: &str = "DockPanelContainer";
 
-/// Root component
+#[cfg(target_family = "wasm")]
+const GPUI_COMPONENT_ASSETS_BASE: &str = "/gpui-component/gallery/";
+
+// ---- WASM entry ----
+
+#[cfg(target_family = "wasm")]
+#[wasm_bindgen]
+pub fn init_web() -> Result<(), JsValue> {
+    console_error_panic_hook::set_once();
+    console_log::init_with_level(log::Level::Info).expect("Failed to initialize logger");
+    tracing_wasm::set_as_global_default();
+
+    let app = gpui_platform::single_threaded_web();
+
+    app.with_assets(gpui_component_assets::Assets::new(SharedString::from(
+        GPUI_COMPONENT_ASSETS_BASE,
+    )))
+    .run(move |cx: &mut App| {
+        let http_client = unsafe {
+            gpui_web::FetchHttpClient::with_user_agent("gpui-template/0.1.0")
+                .expect("failed to create FetchHttpClient")
+        };
+        cx.set_http_client(std::sync::Arc::new(http_client));
+
+        gpui_component::init(cx);
+        app_state::AppState::init(cx);
+        themes::init(cx);
+        i18n::init(cx);
+        key_binding::init(cx);
+
+        register_panel(cx, PANEL_NAME, |_dock_area, _state, info, window, cx| {
+            let _state = match info {
+                PanelInfo::Panel(value) => panels::DockPanelState::from_value(value.clone()),
+                _ => panels::DockPanelState::default(),
+            };
+            let panel: gpui::Entity<panels::SamplePanel> =
+                cx.new(|cx| panels::SamplePanel::new(window, cx));
+            Box::new(panel) as Box<dyn gpui_component::dock::PanelView>
+        });
+
+        cx.on_action(|_: &Quit, cx| {
+            cx.quit();
+        });
+
+        cx.open_window(WindowOptions::default(), |window, cx| {
+            let workspace = Workspace::new(window, cx);
+            cx.new(|cx| Root::new(workspace, window, cx))
+        })
+        .expect("failed to open window");
+
+        cx.activate(true);
+    });
+
+    Ok(())
+}
+
+// ---- Desktop-only components ----
+
+#[cfg(not(target_family = "wasm"))]
 struct DockRoot {
     title_bar: Entity<title_bar::AppTitleBar>,
     view: AnyView,
 }
 
+#[cfg(not(target_family = "wasm"))]
 impl DockRoot {
     pub fn new(
         title: impl Into<SharedString>,
@@ -50,6 +113,7 @@ impl DockRoot {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
 impl Render for DockRoot {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let sheet_layer = Root::render_sheet_layer(window, cx);
@@ -75,12 +139,14 @@ impl Render for DockRoot {
     }
 }
 
-/// Create a new window
+#[cfg(not(target_family = "wasm"))]
 pub fn open_new<F, E>(title: &str, crate_view_fn: F, cx: &mut App)
 where
     E: Into<AnyView>,
     F: FnOnce(&mut Window, &mut App) -> E + 'static,
 {
+    let title = SharedString::from(title.to_string());
+
     let mut window_size = size(px(1200.0), px(800.0));
     if let Some(display) = cx.primary_display() {
         let display_size = display.bounds().size;
@@ -88,7 +154,6 @@ where
         window_size.height = window_size.height.min(display_size.height * 0.85);
     }
     let window_bounds = Bounds::centered(None, window_size, cx);
-    let title = SharedString::from(title.to_string());
 
     cx.open_window(
         WindowOptions {
@@ -115,7 +180,7 @@ where
     .expect("failed to update window");
 }
 
-/// Initialize the app
+#[cfg(not(target_family = "wasm"))]
 pub fn init(cx: &mut App) {
     use tracing_subscriber::layer::SubscriberExt;
     use tracing_subscriber::util::SubscriberInitExt;
@@ -140,7 +205,8 @@ pub fn init(cx: &mut App) {
             PanelInfo::Panel(value) => panels::DockPanelState::from_value(value.clone()),
             _ => panels::DockPanelState::default(),
         };
-        let panel: gpui::Entity<panels::SamplePanel> = cx.new(|cx| panels::SamplePanel::new(window, cx));
+        let panel: gpui::Entity<panels::SamplePanel> =
+            cx.new(|cx| panels::SamplePanel::new(window, cx));
         Box::new(panel) as Box<dyn gpui_component::dock::PanelView>
     });
 

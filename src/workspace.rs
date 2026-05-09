@@ -43,10 +43,6 @@ impl Workspace {
 
 impl Render for Workspace {
     fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        v_flex()
-            .id("workspace-root")
-            .w_full()
-            .h_full()
-            .child(self.dock_area.clone())
+        self.dock_area.clone()
     }
 }
