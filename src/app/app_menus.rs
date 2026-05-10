@@ -8,6 +8,8 @@ use rust_i18n::t;
 
 #[cfg(not(target_family = "wasm"))]
 use crate::app::actions::{About, CloseWindow, Open, Quit, SelectLocale, SwitchTheme, SwitchThemeMode};
+#[cfg(not(target_family = "wasm"))]
+use crate::app_state::AppState;
 
 /// Initialize app menus
 pub fn init(title: impl Into<SharedString>, cx: &mut App) {
@@ -19,9 +21,34 @@ pub fn init(title: impl Into<SharedString>, cx: &mut App) {
     }
 
     #[cfg(not(target_family = "wasm"))]
-    cx.set_menus(vec![
+    {
+        let title = title.into();
+        cx.set_menus(build_menus(title, cx));
+    }
+}
+
+/// Rebuild menus from current `rust_i18n` locale (e.g. after `SelectLocale`).
+#[cfg(not(target_family = "wasm"))]
+pub fn refresh(cx: &mut App) {
+    let title = {
+        let stored = AppState::global(cx).app_title();
+        if stored.is_empty() {
+            SharedString::from("GPUI Template")
+        } else {
+            stored.clone()
+        }
+    };
+    cx.set_menus(build_menus(title, cx));
+}
+
+#[cfg(target_family = "wasm")]
+pub fn refresh(_cx: &mut App) {}
+
+#[cfg(not(target_family = "wasm"))]
+pub fn build_menus(title: SharedString, cx: &App) -> Vec<Menu> {
+    vec![
         Menu {
-            name: title.into(),
+            name: title,
             items: vec![
                 MenuItem::action(t!("menu.app.about").to_string(), About),
                 MenuItem::Separator,
@@ -72,7 +99,7 @@ pub fn init(title: impl Into<SharedString>, cx: &mut App) {
                 Open,
             )],
         },
-    ]);
+    ]
 }
 
 #[cfg(not(target_family = "wasm"))]

@@ -1,6 +1,7 @@
 use gpui::App;
 
 use crate::app::actions::SelectLocale;
+use crate::app_menus;
 use crate::panels::AppSettings;
 
 /// Initialize i18n
@@ -11,6 +12,7 @@ pub fn init(cx: &mut App) {
     cx.on_action(|action: &SelectLocale, cx| {
         change_locale(action.0.as_ref());
         AppSettings::global_mut(cx).locale = action.0.clone();
+        app_menus::refresh(cx);
         cx.refresh_windows();
     });
 }

@@ -8,6 +8,7 @@ use gpui_component::{IconName, Theme, ThemeMode};
 use gpui_component::button::{Button, ButtonVariants as _};
 use rust_i18n::t;
 
+use crate::app_menus;
 use crate::app_state::AppSettings;
 
 const TAB_WORKBENCH: usize = 0;
@@ -171,6 +172,8 @@ impl CenterPanel {
                                 |val: SharedString, cx: &mut App| {
                                     AppSettings::global_mut(cx).locale = val.clone();
                                     rust_i18n::set_locale(val.as_ref());
+                                    app_menus::refresh(cx);
+                                    cx.refresh_windows();
                                     crate::app::themes::save_state(cx);
                                 },
                             )
