@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use gpui::{Application, App, AppContext};
+use gpui::{Application, App};
 
 fn main() {
     #[cfg(target_os = "windows")]

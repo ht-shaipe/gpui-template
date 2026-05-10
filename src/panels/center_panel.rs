@@ -1,9 +1,12 @@
 use gpui::*;
 use gpui::prelude::FluentBuilder;
 use gpui_component::dock::{Panel, PanelEvent};
-use gpui_component::setting::{SettingGroup, SettingItem, SettingPage, SettingField};
+use gpui_component::setting::{NumberFieldOptions, SettingGroup, SettingItem, SettingPage, SettingField};
 use gpui_component::h_flex;
 use gpui_component::ActiveTheme;
+use gpui_component::{IconName, Theme, ThemeMode};
+use gpui_component::button::{Button, ButtonVariants as _};
+use rust_i18n::t;
 
 use crate::app_state::AppSettings;
 
@@ -34,49 +37,67 @@ impl CenterPanel {
 
     fn render_tab_bar(&self, selected_tab: usize, cx: &mut Context<Self>) -> impl IntoElement {
         let tabs = [
-            ("工作台", TAB_WORKBENCH),
-            ("配置", TAB_CONFIG),
-            ("日志", TAB_LOG),
-            ("监控", TAB_MONITOR),
+            (t!("tab.workbench").to_string(), TAB_WORKBENCH),
+            (t!("tab.config").to_string(), TAB_CONFIG),
+            (t!("tab.log").to_string(), TAB_LOG),
+            (t!("tab.monitor").to_string(), TAB_MONITOR),
         ];
+
+        let show_left = AppSettings::global(cx).show_left_panel;
+        let show_right = AppSettings::global(cx).show_right_panel;
+        let theme = cx.theme();
 
         h_flex()
             .id("tab-bar")
             .h(px(40.))
             .w_full()
-            .bg(rgb(0x2a2a2a))
+            .bg(theme.colors.tab_bar)
             .border_b(px(1.0))
-            .border_color(rgb(0x3a3a3a))
+            .border_color(theme.colors.border)
             .items_center()
+            // Left: toggle left panel button
+            .child(
+                Button::new("toggle-left")
+                    .ghost()
+                    .icon(if show_left { IconName::PanelLeftClose } else { IconName::PanelLeftOpen })
+                    .on_click(|_ev, _window: &mut Window, cx: &mut App| {
+                        AppSettings::global_mut(cx).show_left_panel = !AppSettings::global(cx).show_left_panel;
+                    })
+            )
+            // Center: tabs
             .children(tabs.iter().map(|(label, idx)| {
                 let is_selected = selected_tab == *idx;
                 let tab_idx = *idx;
-                
+                let tab_bg = theme.colors.tab_active;
+                let tab_bar_bg = theme.colors.tab_bar;
+                let primary = theme.colors.primary;
+                let foreground = theme.colors.foreground;
+                let muted_fg = theme.colors.muted_foreground;
+
                 div()
-                    .id(*label)
+                    .id(*idx)
                     .px(px(16.))
                     .h_full()
                     .flex()
                     .items_center()
                     .cursor_pointer()
                     .when(is_selected, |this| {
-                        this.bg(rgb(0x1a1a1a))
+                        this.bg(tab_bg)
                             .border_b(px(2.0))
-                            .border_color(rgb(0x4a9eff))
+                            .border_color(primary)
                     })
                     .when(!is_selected, |this| {
                         this.border_b(px(2.0))
-                            .border_color(rgb(0x2a2a2a))
+                            .border_color(tab_bar_bg)
                     })
                     .child(
                         div()
-                            .text_color(if is_selected { rgb(0xffffff) } else { rgb(0x888888) })
+                            .text_color(if is_selected { foreground } else { muted_fg })
                             .text_size(px(14.))
                             .font_weight(if is_selected { FontWeight::BOLD } else { FontWeight::NORMAL })
-                            .child(*label),
+                            .child(label.clone()),
                     )
                     .on_click(move |_ev, window: &mut Window, _cx: &mut App| {
-                        // Update global settings to show the selected tab
                         if tab_idx == TAB_CONFIG {
                             AppSettings::global_mut(_cx).show_settings = true;
                         } else {
@@ -85,135 +106,196 @@ impl CenterPanel {
                         window.refresh();
                     })
             }))
+            // Spacer
+            .child(div().flex_1())
+            // Right: toggle right panel button
             .child(
-                div()
-                    .id("tab-add")
-                    .ml_auto()
-                    .px(px(12.))
-                    .h_full()
-                    .flex()
-                    .items_center()
-                    .cursor_pointer()
-                    .child(
-                        div()
-                            .text_color(rgb(0x888888))
-                            .text_size(px(18.))
-                            .child("+"),
-                    )
+                Button::new("toggle-right")
+                    .ghost()
+                    .icon(if show_right { IconName::PanelRightClose } else { IconName::PanelRightOpen })
+                    .on_click(|_ev, _window: &mut Window, cx: &mut App| {
+                        AppSettings::global_mut(cx).show_right_panel = !AppSettings::global(cx).show_right_panel;
+                    })
             )
     }
 
     fn render_workbench_content(&self, cx: &mut Context<Self>) -> impl IntoElement {
+        let theme = cx.theme();
         div()
             .id("workbench-content")
             .flex()
             .flex_1()
             .items_center()
             .justify_center()
-            .bg(rgb(0x1a1a1a))
+            .bg(theme.colors.background)
             .child(
                 div()
-                    .text_color(rgb(0x666666))
+                    .text_color(theme.colors.muted_foreground)
                     .text_size(px(24.))
-                    .child("工作台")
+                    .child(t!("tab.workbench").to_string())
             )
     }
 
     fn render_config_content(&self, cx: &mut Context<Self>) -> impl IntoElement {
         let default_settings = AppSettings::default();
-        
-        // Create a simple settings page
-        let settings_page = SettingPage::new("系统配置".to_string())
+
+        let settings_page = SettingPage::new(t!("config.page.title").to_string())
             .resettable(true)
             .default_open(true)
             .groups(vec![
                 SettingGroup::new()
-                    .title("外观".to_string())
+                    .title(t!("config.group.appearance").to_string())
                     .items(vec![
                         SettingItem::new(
-                            "深色模式".to_string(),
+                            t!("config.appearance.dark_mode.label").to_string(),
                             SettingField::switch(
                                 |cx: &App| cx.theme().mode.is_dark(),
                                 |val: bool, cx: &mut App| {
-                                    log::info!("Dark mode toggled: {}", val);
+                                    let mode = if val { ThemeMode::Dark } else { ThemeMode::Light };
+                                    Theme::global_mut(cx).mode = mode;
+                                    Theme::change(mode, None, cx);
+                                    crate::app::themes::save_state(cx);
                                 },
                             )
                             .default_value(false),
                         )
-                        .description("启用深色主题".to_string()),
+                        .description(t!("config.appearance.dark_mode.description").to_string()),
                         SettingItem::new(
-                            "语言".to_string(),
+                            t!("config.appearance.language.label").to_string(),
                             SettingField::dropdown(
                                 vec![
-                                    ("zh-CN".into(), "简体中文".into()),
-                                    ("en".into(), "English".into()),
+                                    ("zh-CN".into(), t!("lang.zh_cn").into()),
+                                    ("en".into(), t!("lang.en").into()),
                                 ],
-                                |cx: &App| "zh-CN".into(),
+                                |cx: &App| AppSettings::global(cx).locale.clone(),
                                 |val: SharedString, cx: &mut App| {
-                                    log::info!("Language changed to: {}", val);
+                                    AppSettings::global_mut(cx).locale = val.clone();
                                     rust_i18n::set_locale(val.as_ref());
+                                    crate::app::themes::save_state(cx);
                                 },
                             )
-                            .default_value("zh-CN"),
+                            .default_value(default_settings.locale),
                         )
-                        .description("选择界面语言".to_string()),
+                        .description(t!("config.appearance.language.description").to_string()),
                     ]),
                 SettingGroup::new()
-                    .title("其他".to_string())
+                    .title(t!("config.group.font").to_string())
                     .items(vec![
                         SettingItem::new(
-                            "自动保存".to_string(),
+                            t!("config.font.label").to_string(),
+                            SettingField::dropdown(
+                                vec![
+                                    ("Arial".into(), "Arial".into()),
+                                    ("Helvetica".into(), "Helvetica".into()),
+                                    ("Times New Roman".into(), "Times New Roman".into()),
+                                    ("Courier New".into(), "Courier New".into()),
+                                ],
+                                |cx: &App| AppSettings::global(cx).font_family.clone(),
+                                |val: SharedString, cx: &mut App| {
+                                    AppSettings::global_mut(cx).font_family = val;
+                                    crate::app::themes::save_state(cx);
+                                },
+                            )
+                            .default_value(default_settings.font_family),
+                        )
+                        .description(t!("config.font.description").to_string()),
+                        SettingItem::new(
+                            t!("config.font.size.label").to_string(),
+                            SettingField::number_input(
+                                NumberFieldOptions {
+                                    min: 10.0,
+                                    max: 32.0,
+                                    step: 1.0,
+                                    ..Default::default()
+                                },
+                                |cx: &App| AppSettings::global(cx).font_size,
+                                |val: f64, cx: &mut App| {
+                                    AppSettings::global_mut(cx).font_size = val;
+                                    crate::app::themes::save_state(cx);
+                                },
+                            )
+                            .default_value(default_settings.font_size),
+                        )
+                        .description(t!("config.font.size.description").to_string()),
+                        SettingItem::new(
+                            t!("config.font.line_height.label").to_string(),
+                            SettingField::number_input(
+                                NumberFieldOptions {
+                                    min: 8.0,
+                                    max: 32.0,
+                                    step: 1.0,
+                                    ..Default::default()
+                                },
+                                |cx: &App| AppSettings::global(cx).line_height,
+                                |val: f64, cx: &mut App| {
+                                    AppSettings::global_mut(cx).line_height = val;
+                                    crate::app::themes::save_state(cx);
+                                },
+                            )
+                            .default_value(default_settings.line_height),
+                        )
+                        .description(t!("config.font.line_height.description").to_string()),
+                    ]),
+                SettingGroup::new()
+                    .title(t!("config.group.other").to_string())
+                    .items(vec![
+                        SettingItem::new(
+                            t!("config.auto_switch_theme.label").to_string(),
                             SettingField::checkbox(
                                 |cx: &App| AppSettings::global(cx).auto_switch_theme,
                                 |val: bool, cx: &mut App| {
-                                    log::info!("Auto save toggled: {}", val);
+                                    AppSettings::global_mut(cx).auto_switch_theme = val;
+                                    crate::app::themes::save_state(cx);
                                 },
                             )
                             .default_value(default_settings.auto_switch_theme),
                         )
-                        .description("自动保存设置".to_string()),
+                        .description(t!("config.auto_switch_theme.description").to_string()),
                     ]),
             ]);
 
+        let theme = cx.theme();
         div()
             .id("config-content")
             .flex()
             .flex_1()
             .overflow_scroll()
             .p(px(16.))
-            .bg(rgb(0x1a1a1a))
+            .bg(theme.colors.background)
             .child(gpui_component::setting::Settings::new("settings").page(settings_page))
     }
 
     fn render_log_content(&self, cx: &mut Context<Self>) -> impl IntoElement {
+        let theme = cx.theme();
         div()
             .id("log-content")
             .flex()
             .flex_1()
             .items_center()
             .justify_center()
-            .bg(rgb(0x1a1a1a))
+            .bg(theme.colors.background)
             .child(
                 div()
-                    .text_color(rgb(0x666666))
+                    .text_color(theme.colors.muted_foreground)
                     .text_size(px(24.))
-                    .child("日志")
+                    .child(t!("tab.log").to_string())
             )
     }
 
     fn render_monitor_content(&self, cx: &mut Context<Self>) -> impl IntoElement {
+        let theme = cx.theme();
         div()
             .id("monitor-content")
             .flex()
             .flex_1()
             .items_center()
             .justify_center()
-            .bg(rgb(0x1a1a1a))
+            .bg(theme.colors.background)
             .child(
                 div()
-                    .text_color(rgb(0x666666))
+                    .text_color(theme.colors.muted_foreground)
                     .text_size(px(24.))
-                    .child("监控")
+                    .child(t!("tab.monitor").to_string())
             )
     }
 }
@@ -224,7 +306,7 @@ impl Panel for CenterPanel {
     }
 
     fn title(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        "工作区"
+        t!("panel.workspace").to_string()
     }
 }
 
@@ -249,13 +331,13 @@ impl Render for CenterPanel {
             .child(self.render_tab_bar(selected_tab, cx))
             .child(
                 if selected_tab == TAB_CONFIG {
-                    div().child(self.render_config_content(cx))
+                    self.render_config_content(cx).into_any_element()
                 } else if selected_tab == TAB_LOG {
-                    div().child(self.render_log_content(cx))
+                    self.render_log_content(cx).into_any_element()
                 } else if selected_tab == TAB_MONITOR {
-                    div().child(self.render_monitor_content(cx))
+                    self.render_monitor_content(cx).into_any_element()
                 } else {
-                    div().child(self.render_workbench_content(cx))
+                    self.render_workbench_content(cx).into_any_element()
                 }
             )
     }

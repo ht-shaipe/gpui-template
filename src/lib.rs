@@ -19,7 +19,7 @@ pub use panels::{AppSettings, SettingsPanel};
 pub use workspace::Workspace;
 
 use gpui::{
-    AnyView, App, AppContext as _, Context, Entity, InteractiveElement, IntoElement,
+    AnyView, App, AppContext as _, Context, Entity, IntoElement,
     ParentElement, Render, SharedString, Styled, Window, WindowOptions, div,
 };
 #[cfg(not(target_family = "wasm"))]

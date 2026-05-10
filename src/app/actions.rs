@@ -12,6 +12,8 @@ actions!(
         CloseWindow,
         ToggleSearch,
         OpenSettings,
+        ToggleLeftPanel,
+        ToggleRightPanel,
     ]
 );
 

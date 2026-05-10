@@ -45,6 +45,7 @@ impl SettingsPanel {
                                 |cx: &App| AppSettings::global(cx).auto_switch_theme,
                                 |val: bool, cx: &mut App| {
                                     AppSettings::global_mut(cx).auto_switch_theme = val;
+                                    crate::app::themes::save_state(cx);
                                 },
                             )
                             .default_value(default_settings.auto_switch_theme),
@@ -55,7 +56,8 @@ impl SettingsPanel {
                             SettingField::switch(
                                 |cx: &App| AppSettings::global(cx).resettable,
                                 |checked: bool, cx: &mut App| {
-                                    AppSettings::global_mut(cx).resettable = checked
+                                    AppSettings::global_mut(cx).resettable = checked;
+                                    crate::app::themes::save_state(cx);
                                 },
                             ),
                         )
@@ -76,6 +78,7 @@ impl SettingsPanel {
                                 |cx: &App| AppSettings::global(cx).font_family.clone(),
                                 |val, cx: &mut App| {
                                     AppSettings::global_mut(cx).font_family = val;
+                                    crate::app::themes::save_state(cx);
                                 },
                             )
                             .default_value(default_settings.font_family),
@@ -94,6 +97,7 @@ impl SettingsPanel {
                                 |cx: &App| AppSettings::global(cx).font_size,
                                 |val: f64, cx: &mut App| {
                                     AppSettings::global_mut(cx).font_size = val;
+                                    crate::app::themes::save_state(cx);
                                 },
                             )
                             .default_value(default_settings.font_size),
@@ -112,6 +116,7 @@ impl SettingsPanel {
                                 |cx: &App| AppSettings::global(cx).line_height,
                                 |val: f64, cx: &mut App| {
                                     AppSettings::global_mut(cx).line_height = val;
+                                    crate::app::themes::save_state(cx);
                                 },
                             )
                             .default_value(default_settings.line_height),

@@ -14,6 +14,10 @@ pub struct AppSettings {
     pub group_variant: SharedString,
     #[serde(default)]
     pub show_settings: bool,
+    #[serde(default)]
+    pub show_left_panel: bool,
+    #[serde(default)]
+    pub show_right_panel: bool,
 }
 
 impl Default for AppSettings {
@@ -27,6 +31,8 @@ impl Default for AppSettings {
             resettable: true,
             group_variant: "Fill".into(),
             show_settings: false,
+            show_left_panel: true,
+            show_right_panel: true,
         }
     }
 }

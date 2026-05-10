@@ -48,3 +48,39 @@ settings.general.font.size.label: "Font Size"
 settings.general.font.size.description: "Adjust the font size for better readability."
 settings.general.font.line_height.label: "Line Height"
 settings.general.font.line_height.description: "Adjust the line height for better readability."
+settings.general.group.other: "Other"
+settings.general.language.label: "Language"
+settings.general.language.description: "Select the interface language."
+settings.general.auto_switch_theme.label: "Auto Switch Theme"
+settings.general.auto_switch_theme.description: "Automatically switch theme based on system settings."
+
+# Center panel tabs
+tab.workbench: "Workbench"
+tab.config: "Config"
+tab.log: "Log"
+tab.monitor: "Monitor"
+
+# Config page
+config.page.title: "System Settings"
+config.group.appearance: "Appearance"
+config.appearance.dark_mode.label: "Dark Mode"
+config.appearance.dark_mode.description: "Enable dark theme"
+config.appearance.language.label: "Language"
+config.appearance.language.description: "Select interface language"
+config.group.font: "Font"
+config.font.label: "Font"
+config.font.description: "Select interface font"
+config.font.size.label: "Font Size"
+config.font.size.description: "Adjust font size for better readability"
+config.font.line_height.label: "Line Height"
+config.font.line_height.description: "Adjust line height for better readability"
+config.group.other: "Other"
+config.auto_switch_theme.label: "Auto Switch Theme"
+config.auto_switch_theme.description: "Auto switch theme based on system settings"
+
+# Panel title
+panel.workspace: "Workspace"
+
+# Language options
+lang.zh_cn: "Simplified Chinese"
+lang.en: "English"

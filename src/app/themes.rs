@@ -7,7 +7,7 @@ use gpui_component::ActiveTheme as _;
 use gpui_component::{Theme, ThemeRegistry};
 use serde::{Deserialize, Serialize};
 
-use crate::app::actions::{SwitchTheme, SwitchThemeMode};
+use crate::app::actions::{SwitchTheme, SwitchThemeMode, ToggleLeftPanel, ToggleRightPanel};
 use crate::panels::AppSettings;
 
 #[cfg(target_family = "wasm")]
@@ -153,6 +153,20 @@ pub fn init(cx: &mut App) {
         Theme::change(switch.0, None, cx);
         cx.refresh_windows();
         save_state(cx);
+    });
+
+    // Toggle left panel action
+    cx.on_action(|_: &ToggleLeftPanel, cx| {
+        let settings = AppSettings::global_mut(cx);
+        settings.show_left_panel = !settings.show_left_panel;
+        cx.refresh_windows();
+    });
+
+    // Toggle right panel action
+    cx.on_action(|_: &ToggleRightPanel, cx| {
+        let settings = AppSettings::global_mut(cx);
+        settings.show_right_panel = !settings.show_right_panel;
+        cx.refresh_windows();
     });
 }
 
