@@ -1,0 +1,30 @@
+[package]
+name = "smol"
+version = "2.0.2"
+edition = "2021"
+publish = false
+
+[features]
+default = []
+
+[lib]
+path = "src/lib.rs"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+async-channel = "2"
+async-executor = "1"
+async-fs = "2"
+async-io = "2"
+async-lock = "3"
+async-net = "2"
+blocking = "1"
+futures-lite = "2"
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+async-channel = "2"
+async-executor = "1"
+async-lock = "3"
+futures-lite = "2"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["Window", "Performance"] }
+js-sys = "0.3"

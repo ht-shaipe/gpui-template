@@ -78,6 +78,25 @@ config.group.other: "Other"
 config.auto_switch_theme.label: "Auto Switch Theme"
 config.auto_switch_theme.description: "Auto switch theme based on system settings"
 
+# Software Update
+config.group.update: "Software Update"
+config.update.current_version.label: "Current Version"
+config.update.status.up_to_date: "Up to date"
+config.update.status.checking: "Checking for updates..."
+config.update.status.available: "New version available: %{version}"
+config.update.status.error: "Update check failed: %{error}"
+config.update.check.label: "Check for Updates"
+config.update.check.button: "Check Now"
+config.update.check.description: "Manually check for available software updates"
+config.update.auto_check.label: "Auto Check on Startup"
+config.update.auto_check.description: "Automatically check for updates when app starts"
+config.update.notifications.label: "Update Notifications"
+config.update.notifications.description: "Show notification when new version is available"
+config.update.auto_update.label: "Auto Update"
+config.update.auto_update.description: "Automatically download and install updates when available"
+config.update.frequency.label: "Check Frequency"
+config.update.frequency.description: "Days between automatic update checks"
+
 # Panel title
 panel.workspace: "Workspace"
 

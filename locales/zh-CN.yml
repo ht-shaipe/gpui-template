@@ -78,6 +78,25 @@ config.group.other: "其他"
 config.auto_switch_theme.label: "自动切换主题"
 config.auto_switch_theme.description: "根据系统设置自动切换主题"
 
+# 软件更新
+config.group.update: "软件更新"
+config.update.current_version.label: "当前版本"
+config.update.status.up_to_date: "已是最新版本"
+config.update.status.checking: "正在检查更新..."
+config.update.status.available: "发现新版本: %{version}"
+config.update.status.error: "检查更新失败: %{error}"
+config.update.check.label: "检查更新"
+config.update.check.button: "立即检查"
+config.update.check.description: "手动检查是否有可用的软件更新"
+config.update.auto_check.label: "启动时自动检查"
+config.update.auto_check.description: "应用启动时自动检查是否有新版本"
+config.update.notifications.label: "更新通知"
+config.update.notifications.description: "当有新版本时显示通知提醒"
+config.update.auto_update.label: "自动更新"
+config.update.auto_update.description: "发现新版本时自动下载并安装更新"
+config.update.frequency.label: "检查频率"
+config.update.frequency.description: "自动检查更新的间隔天数"
+
 # 面板标题
 panel.workspace: "工作区"
 

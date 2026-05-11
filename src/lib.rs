@@ -1,5 +1,6 @@
 mod app;
 mod assets;
+mod core;
 mod i18n;
 mod panels;
 mod workspace;
@@ -10,8 +11,8 @@ pub use assets::Assets;
 
 pub use app::{
     actions::{
-        About, CloseWindow, Open, Quit, SelectFont, SelectLocale, SelectRadius, SwitchTheme,
-        SwitchThemeMode, ToggleSearch, OpenSettings,
+        About, CloseWindow, Open, OpenSettings, Quit, SelectFont, SelectLocale, SelectRadius,
+        SwitchTheme, SwitchThemeMode, ToggleSearch,
     },
     app_menus, app_state, key_binding, system_tray, themes, title_bar,
 };
@@ -19,14 +20,17 @@ pub use panels::{AppSettings, SettingsPanel};
 pub use workspace::Workspace;
 
 use gpui::{
-    AnyView, App, AppContext as _, Context, Entity, IntoElement,
-    ParentElement, Render, SharedString, Styled, Window, WindowOptions, div,
+    div, AnyView, App, AppContext as _, Context, Entity, IntoElement, ParentElement, Render,
+    SharedString, Styled, Window, WindowOptions,
 };
 #[cfg(not(target_family = "wasm"))]
-use gpui::{Bounds, WindowBounds, WindowKind, px, size};
-use gpui_component::{Root, dock::{register_panel, PanelInfo}};
+use gpui::{px, size, Bounds, WindowBounds, WindowKind};
 #[cfg(not(target_family = "wasm"))]
 use gpui_component::TitleBar;
+use gpui_component::{
+    dock::{register_panel, PanelInfo},
+    Root,
+};
 
 #[cfg(target_family = "wasm")]
 use wasm_bindgen::prelude::*;

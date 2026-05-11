@@ -1,8 +1,14 @@
+mod bottom_panel;
 mod center_panel;
+mod left_panel;
+mod right_panel;
 mod settings;
 
 pub use crate::app_state::AppSettings;
+pub use bottom_panel::BottomPanel;
 pub use center_panel::CenterPanel;
+pub use left_panel::LeftPanel;
+pub use right_panel::RightPanel;
 pub use settings::SettingsPanel;
 
 use gpui::*;
@@ -10,7 +16,7 @@ use gpui_component::dock::{Panel, PanelControl, PanelEvent};
 use gpui_component::ActiveTheme as _;
 use serde::{Deserialize, Serialize};
 
-/// A minimal sample panel to demonstrate dock panel integration
+/// A minimal sample panel kept for reference and legacy panel registration
 pub struct SamplePanel {
     focus_handle: FocusHandle,
     name: SharedString,
@@ -35,12 +41,10 @@ impl Panel for SamplePanel {
     }
 
     fn title(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        // Return empty div to hide title
         div().h(px(0.)).into_any_element()
     }
 
     fn zoomable(&self, _cx: &App) -> Option<PanelControl> {
-        // 禁用缩放按钮
         None
     }
 }

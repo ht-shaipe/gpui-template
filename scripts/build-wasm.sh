@@ -17,8 +17,19 @@ else
   echo "Building WASM (dev)…"
 fi
 
-rustup toolchain install nightly --component rustfmt 2>/dev/null || true
-rustup target add wasm32-unknown-unknown --toolchain nightly 2>/dev/null || true
+# Only invoke rustup when something is missing. Unconditional
+# `rustup toolchain install nightly` syncs to the latest nightly and repeats
+# large downloads on every `make dev-web`.
+if ! rustup toolchain list | grep -qE '^nightly'; then
+  echo "Installing nightly toolchain (first time or removed)…"
+  rustup toolchain install nightly --component rustfmt
+fi
+if ! rustup component list --toolchain nightly --installed 2>/dev/null | grep -q rustfmt; then
+  rustup component add --toolchain nightly rustfmt
+fi
+if ! rustup target list --toolchain nightly --installed 2>/dev/null | grep -qx wasm32-unknown-unknown; then
+  rustup target add wasm32-unknown-unknown --toolchain nightly
+fi
 
 cargo +nightly build --target wasm32-unknown-unknown --no-default-features --lib "${RELEASE_FLAG[@]}"
 
