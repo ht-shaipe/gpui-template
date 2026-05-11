@@ -81,9 +81,9 @@ impl BottomPanel {
                 Button::new("toggle-bottom")
                     .ghost()
                     .icon(if show_bottom {
-                        IconName::ChevronDown
+                        IconName::PanelBottom
                     } else {
-                        IconName::ChevronUp
+                        IconName::PanelBottomOpen
                     })
                     .on_click(|_ev, _window: &mut Window, cx: &mut App| {
                         AppSettings::global_mut(cx).show_bottom_panel =
@@ -136,36 +136,20 @@ impl BottomPanel {
                         el.child(
                             Button::new(close_btn_id)
                                 .ghost()
+                                .icon(IconName::Close)
                                 .on_click(move |_ev, _window: &mut Window, cx: &mut App| {
                                     AppSettings::global_mut(cx).close_terminal_tab(tab_id);
                                 })
-                                .child(
-                                    div()
-                                        .ml(px(6.))
-                                        .text_color(muted_fg)
-                                        .text_size(px(10.))
-                                        .child("×")
-                                )
                         )
                     })
             }))
             .child(
                 Button::new("add-tab")
                     .ghost()
+                    .icon(IconName::Plus)
                     .on_click(|_ev, _window: &mut Window, cx: &mut App| {
                         AppSettings::global_mut(cx).add_terminal_tab();
                     })
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .w(px(32.))
-                            .h(px(32.))
-                            .text_color(theme.colors.muted_foreground)
-                            .text_size(px(16.))
-                            .child("+")
-                    )
             )
     }
     

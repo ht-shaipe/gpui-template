@@ -170,20 +170,26 @@ impl CenterPanel {
                                 })
                                 .child(tab_label),
                         )
-                        // Close button (only show if more than one tab)
+                        // Close button (only show on hover, if more than one tab)
                         .when(self.open_tabs.len() > 1, |this| {
                             let tab_to_close = *idx;
                             let entity = entity_clone.clone();
                             this.child(
-                                Button::new(("close-tab", *idx))
-                                    .ghost()
-                                    .icon(IconName::Close)
-                                    .on_click(move |_ev, window: &mut Window, cx: &mut App| {
-                                        entity.update(cx, |this, cx| {
-                                            this.close_tab(tab_to_close, cx);
-                                        });
-                                        window.refresh();
-                                    })
+                                div()
+                                    .opacity(0.0)
+                                    .hover(|style| style.opacity(1.0))
+                                    .child(
+                                        Button::new(("close-tab", *idx))
+                                            .ghost()
+                                            .icon(IconName::Close)
+                                            .on_click(move |_ev, window: &mut Window, cx: &mut App| {
+                                                cx.stop_propagation();
+                                                entity.update(cx, |this, cx| {
+                                                    this.close_tab(tab_to_close, cx);
+                                                });
+                                                window.refresh();
+                                            })
+                                    )
                             )
                         })
                         .on_click(move |_ev, window: &mut Window, _cx: &mut App| {
@@ -217,9 +223,9 @@ impl CenterPanel {
                 Button::new("toggle-bottom")
                     .ghost()
                     .icon(if show_bottom {
-                        IconName::ChevronDown
+                        IconName::PanelBottom
                     } else {
-                        IconName::ChevronUp
+                        IconName::PanelBottomOpen
                     })
                     .on_click(|_ev, _window: &mut Window, cx: &mut App| {
                         AppSettings::global_mut(cx).show_bottom_panel =
@@ -652,6 +658,11 @@ impl Focusable for CenterPanel {
 
 impl Render for CenterPanel {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        // If show_settings is true but config tab is closed, add it back
+        if AppSettings::global(cx).show_settings && !self.open_tabs.contains(&TAB_CONFIG) {
+            self.open_tabs.push(TAB_CONFIG);
+        }
+        
         let selected_tab = self.get_selected_tab(cx);
 
         div()
