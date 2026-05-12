@@ -1,0 +1,14 @@
+[template]
+cargo_generate_version = ">=0.18.0"
+
+[placeholders]
+project-description = { type = "string", prompt = "Project description", default = "A GPUI desktop application" }
+author-name = { type = "string", prompt = "Author name", default = "" }
+author-email = { type = "string", prompt = "Author email", default = "" }
+
+[hooks]
+# Post-generate hook to initialize git
+post = ["git init"]
+
+[template.default_answers]
+# Auto-detect from git config when possible

@@ -7,25 +7,25 @@ fn main() {
     std::env::set_var("GPUI_DISABLE_DIRECT_COMPOSITION", "true");
 
     Application::new()
-        .with_assets(gpui_template::Assets)
+        .with_assets({{crate_name}}::Assets)
         .run(move |cx: &mut App| {
-            gpui_template::init(cx);
+            {{crate_name}}::init(cx);
 
             // System tray
-            if let Err(e) = gpui_template::system_tray::init_platform() {
+            if let Err(e) = {{crate_name}}::system_tray::init_platform() {
                 log::error!("Failed to init tray platform: {}", e);
             }
-            match gpui_template::system_tray::SystemTray::new() {
+            match {{crate_name}}::system_tray::SystemTray::new() {
                 Ok(tray) => {
-                    gpui_template::system_tray::setup_tray_event_handler(tray, cx);
+                    {{crate_name}}::system_tray::setup_tray_event_handler(tray, cx);
                 }
                 Err(e) => log::error!("Failed to init system tray: {}", e),
             }
 
-            cx.on_action(|_: &gpui_template::Quit, cx| {
+            cx.on_action(|_: &{{crate_name}}::Quit, cx| {
                 cx.quit();
             });
 
-            gpui_template::open_new("GPUI Template", |window, cx| gpui_template::Workspace::new(window, cx), cx);
+            {{crate_name}}::open_new("{{project-name}}", |window, cx| {{crate_name}}::Workspace::new(window, cx), cx);
         });
 }

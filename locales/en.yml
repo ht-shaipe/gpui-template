@@ -1,7 +1,7 @@
 _version: 1
 
 # App
-app.title: "GPUI Template"
+app.title: "{{project-name}}"
 
 # Menu
 menu.app.about: "About"

@@ -1,7 +1,7 @@
 _version: 1
 
 # 应用
-app.title: "GPUI 模板"
+app.title: "{{project-name}}"
 
 # 菜单
 menu.app.about: "关于"

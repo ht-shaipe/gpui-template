@@ -56,7 +56,7 @@ pub fn init_web() -> Result<(), JsValue> {
     )))
     .run(move |cx: &mut App| {
         let http_client = unsafe {
-            gpui_web::FetchHttpClient::with_user_agent("gpui-template/0.1.0")
+            gpui_web::FetchHttpClient::with_user_agent("{{crate_name}}/0.1.0")
                 .expect("failed to create FetchHttpClient")
         };
         cx.set_http_client(std::sync::Arc::new(http_client));
@@ -201,7 +201,7 @@ pub fn init(cx: &mut App) {
     app_state::AppState::init(cx);
     themes::init(cx);
     i18n::init(cx);
-    app_menus::init("GPUI Template", cx);
+    app_menus::init("{{project-name}}", cx);
     key_binding::init(cx);
 
     register_panel(cx, PANEL_NAME, |_dock_area, _state, info, window, cx| {

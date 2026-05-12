@@ -1,14 +1,15 @@
 [package]
 edition = "2024"
-name = "gpui-template"
+name = "{{crate_name}}"
 publish = false
 version = "0.1.0"
+authors = ["{{author-name}} <{{author-email}}>
 
 [package.metadata.bundle]
 category = "Developer Tool"
 icon = ["assets/icon.png"]
-identifier = "com.example.gpui-template"
-name = "GPUI Template"
+identifier = "com.example.{{crate_name}}"
+name = "{{project-name}}"
 
 [package.metadata.i18n]
 available-locales = ["en", "zh-CN"]
@@ -25,7 +26,7 @@ crate-type = ["cdylib", "rlib"]
 path = "src/lib.rs"
 
 [[bin]]
-name = "gpui-template"
+name = "{{crate_name}}"
 path = "src/main.rs"
 required-features = ["native-app"]
 

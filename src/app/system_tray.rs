@@ -11,7 +11,7 @@ const MENU_SHOW_ID: &str = "show_window";
 #[cfg(not(target_family = "wasm"))]
 const MENU_QUIT_ID: &str = "quit_app";
 #[cfg(not(target_family = "wasm"))]
-const TRAY_ICON_ID: &str = "com.example.gpui-template.tray";
+const TRAY_ICON_ID: &str = "com.example.{{crate_name}}.tray";
 
 /// Initialize GTK on Linux (required before creating tray icon)
 #[cfg(all(target_os = "linux", not(target_family = "wasm")))]
@@ -65,7 +65,7 @@ impl SystemTray {
             .with_id(TrayIconId::new(TRAY_ICON_ID))
             .with_menu(Box::new(tray_menu))
             .with_menu_on_left_click(false)
-            .with_tooltip("GPUI Template")
+            .with_tooltip("{{project-name}}")
             .with_icon(icon)
             .build()
             .context("Failed to build tray icon")?;

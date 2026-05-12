@@ -66,7 +66,7 @@ impl UpdateChecker {
     /// 创建新的更新检查器
     pub fn new() -> Self {
         Self {
-            check_url: "https://api.github.com/repos/ht-shaipe/gpui-template/releases/latest"
+            check_url: "https://api.github.com/repos/YOUR_USERNAME/{{crate_name}}/releases/latest"
                 .to_string(),
             timeout: Duration::from_secs(10),
         }

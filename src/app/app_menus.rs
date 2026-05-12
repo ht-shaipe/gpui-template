@@ -33,7 +33,7 @@ pub fn refresh(cx: &mut App) {
     let title = {
         let stored = AppState::global(cx).app_title();
         if stored.is_empty() {
-            SharedString::from("GPUI Template")
+            SharedString::from("{{project-name}}")
         } else {
             stored.clone()
         }

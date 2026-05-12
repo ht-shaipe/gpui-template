@@ -34,7 +34,7 @@ impl Default for State {
 fn state_file_path() -> PathBuf {
     let dir = dirs::data_local_dir()
         .unwrap_or_else(|| std::env::temp_dir())
-        .join("gpui-template");
+        .join("{{crate_name}}");
     let _ = std::fs::create_dir_all(&dir);
     dir.join("state.json")
 }
@@ -95,7 +95,7 @@ pub fn init(cx: &mut App) {
         } else {
             let dir = dirs::data_local_dir()
                 .unwrap_or_else(|| PathBuf::from("./"))
-                .join("gpui-template")
+                .join("{{crate_name}}")
                 .join("themes");
             let _ = std::fs::create_dir_all(&dir);
             dir
