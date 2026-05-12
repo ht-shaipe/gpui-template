@@ -10,6 +10,16 @@ exclude = [
     "Cargo.lock",
     "state.json",
     "docks-layout.json",
+    "*.png",
+    "*.jpg",
+    "*.jpeg",
+    "*.ico",
+    "*.woff",
+    "*.woff2",
+    "*.ttf",
+    "*.eot",
+    "bun.lock",
+    "package-lock.json",
 ]
 
 [placeholders]
@@ -17,6 +27,4 @@ project-description = { type = "string", prompt = "Project description", default
 author-name = { type = "string", prompt = "Author name", default = "" }
 author-email = { type = "string", prompt = "Author email", default = "" }
 
-[hooks]
-# Post-generate hook to initialize git
-post = ["git init"]
+# cargo-generate auto-initializes git repo by default, no hooks needed
