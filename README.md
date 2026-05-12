@@ -23,7 +23,7 @@ cargo install cargo-generate
 ### Create a new project
 
 ```bash
-cargo generate --git https://github.com/YOUR_USERNAME/gpui-template --name my-app
+cargo generate --git https://github.com/ht-shaipe/gpui-template --name my-app
 ```
 
 Or from a local path:
@@ -37,7 +37,7 @@ cargo generate --path /path/to/gpui-template --name my-app
 After generating, update the GitHub URL in `src/core/updater/checker.rs`:
 
 ```rust
-check_url: "https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/releases/latest"
+check_url: "https://api.github.com/repos/th-shaipe/YOUR_REPO/releases/latest"
 ```
 
 ## Desktop
@@ -71,13 +71,13 @@ WASM build uses `--no-default-features --lib` so the desktop binary is not linke
 
 This template uses the following placeholders:
 
-| Placeholder | Description | Example |
-|-------------|-------------|---------|
-| `{{project-name}}` | Project name (user input) | `my-app` |
-| `{{crate_name}}` | Crate name (snake_case) | `my_app` |
-| `{{author-name}}` | Author name | `Your Name` |
-| `{{author-email}}` | Author email | `you@example.com` |
-| `{{project-description}}` | Project description | `A GPUI desktop application` |
+| Placeholder               | Description               | Example                      |
+| ------------------------- | ------------------------- | ---------------------------- |
+| `{{project-name}}`        | Project name (user input) | `my-app`                     |
+| `{{crate_name}}`          | Crate name (snake_case)   | `my_app`                     |
+| `{{author-name}}`         | Author name               | `Your Name`                  |
+| `{{author-email}}`        | Author email              | `you@example.com`            |
+| `{{project-description}}` | Project description       | `A GPUI desktop application` |
 
 ## Project Structure
 

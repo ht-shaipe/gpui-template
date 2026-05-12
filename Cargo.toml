@@ -3,7 +3,7 @@ edition = "2024"
 name = "{{crate_name}}"
 publish = false
 version = "0.1.0"
-authors = ["{{author-name}} <{{author-email}}>
+authors = ["{{author-name}} <{{author-email}}>"]
 
 [package.metadata.bundle]
 category = "Developer Tool"

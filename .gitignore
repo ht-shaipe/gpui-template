@@ -4,6 +4,11 @@
 .github
 *.lock
 
+# WASM build
+/www/node_modules
+/www/dist
+*.wasm
+
 # Session data
 /sessions
 /docs
